@@ -1,4 +1,5 @@
-import { Component, computed, Input, input} from '@angular/core';
+import { Component, EventEmitter, Input, Output} from '@angular/core';
+import { required } from '@angular/forms/signals';
 
 
 @Component({
@@ -8,20 +9,22 @@ import { Component, computed, Input, input} from '@angular/core';
   standalone: true,
 })
 export class User {
-  // @Input({required:true}) avatar!: string
-  // @Input({required:true}) name!: string
-  avatar = input.required<string>()
-  name = input.required<string>()
+  @Input({required:true}) id!:string
+  @Input({required:true}) avatar!: string
+  @Input({required:true}) name!: string
+  @Output() select = new EventEmitter()
+  // avatar = input.required<string>()
+  // name = input.required<string>()
 
-  // get imagePath(){
-  //   return 'assets/users/' + this.avatar
-  // }
-  imagePath = computed(() => {
-    return 'assets/users/' + this.avatar()
-  })
-  
+  get imagePath(){
+    return 'assets/users/' + this.avatar
+  }
+  // imagePath = computed(() => {
+  //   return 'assets/users/' + this.avatar()
+  // })
+
   onSelectUser() {
-
+    this.select.emit(this.id)
   }
 }
  
