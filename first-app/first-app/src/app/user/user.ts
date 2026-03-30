@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output} from '@angular/core';
 import { UserInt } from './user.model.js';
+import { Card } from "../shared/card/card";
 
 
 @Component({
@@ -7,6 +8,7 @@ import { UserInt } from './user.model.js';
   templateUrl: './user.html',
   styleUrl: './user.css',
   standalone: true,
+  imports: [Card],
 })
 export class User {
   @Input({required:true}) user!: UserInt
