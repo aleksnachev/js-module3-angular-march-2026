@@ -1,9 +1,32 @@
-import { Injectable } from "@angular/core";
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { UserService } from './user.service.js';
+import { User } from '../../shared/interfaces/user.js';
 
 @Injectable({
-    providedIn:'root'
+  providedIn: 'root',
 })
+export class AuthService {
+  private userService = inject(UserService);
+  private user = signal<User | null>(null);
 
-export class AuthService{
-    
+  isLoggedIn = computed(() => this.user() !== null);
+  currentUser = computed(() => this.user());
+
+  login(email: string, password: string): boolean {
+    const isUser = this.userService.validateCredentials(email, password);
+
+    if (isUser) {
+      this.user.set(isUser);
+      return true;
+    }
+    return false;
+  }
+
+  setSession(user: User): void {
+    this.user.set(user);
+  }
+
+  logout(): void {
+    this.user.set(null);
+  }
 }
