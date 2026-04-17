@@ -13,7 +13,7 @@ export class Api {
   constructor(private http:HttpClient){}
 
   getThemes(): Observable<Theme[]>{
-    return this.http.get<Theme[]>(`${this.apiUrl}/themes`)
+    return this.http.get<Theme[]>(`${this.apiUrl}/themes`);
   }
 
   getLatestPosts(): Observable<Post[]>{
