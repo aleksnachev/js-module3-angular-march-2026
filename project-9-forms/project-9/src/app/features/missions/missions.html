@@ -5,9 +5,9 @@
 
   <div class="mission-grid">
     @for (mission of missions; track mission.id) {
-      <div class="mission-card">
+      <div class="mission-card" appHighlight="#1e3a5f">
         <div class="mission-status status-{{ mission.status }}">
-          {{ mission.status }}
+          <span [appStatusStyle]="mission.status">{{ mission.status }}</span>
         </div>
         <h3>{{ mission.name }}</h3>
         <p class="destination">{{ mission.destination }}</p>
