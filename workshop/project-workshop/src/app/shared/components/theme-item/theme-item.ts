@@ -1,9 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { Theme } from '../../interfaces/theme.js';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-theme-item',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './theme-item.html',
   styleUrl: './theme-item.css',
 })
