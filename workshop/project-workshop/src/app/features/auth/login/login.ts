@@ -1,5 +1,11 @@
 import { Component, inject } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service.js';
 import { InputError } from '../../../shared/directives/input-error.directive.js';
@@ -7,7 +13,7 @@ import { emailValidator } from '../../../shared/validators/email.validator.js';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, RouterLink, InputError],
+  imports: [ReactiveFormsModule, RouterLink, InputError, FormsModule],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -37,17 +43,14 @@ export class Login {
 
     this.authService.login({ email, password }).subscribe({
       next: (user) => {
+        this.authService.setSession(user);
         this.isLoading = false
-        if(user){
-          this.router.navigate(['/themes'])
-        }else {
-          this.errorMessage = 'Invalid email or password'
-        }
+        this.router.navigate(['/themes'])
       },
       error: (err) => {
-        this.isLoading = false
-        this.errorMessage = err.error?.message || 'Login failed.Try again'
-      }
-    })
+        this.isLoading = false;
+        this.errorMessage = err.error?.message || 'Login failed.Try again';
+      },
+    });
   }
 }

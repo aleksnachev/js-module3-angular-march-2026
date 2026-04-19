@@ -1,5 +1,5 @@
 <div class="container">
-  <form class="register" (ngSubmit)="onRegister()">
+  <form class="register" [formGroup]="registerForm" (ngSubmit)="onRegister()">
     <fieldset>
       <h2>Registration Form</h2>
 
@@ -8,23 +8,41 @@
         <label for="username"
           ><span><i class="fas fa-user"></i></span
         ></label>
-        <input class="input-error" type="text" name="username" id="username" placeholder="Johny" [(ngModel)]="username"/>
+        <input
+          appInputError
+          type="text"
+          name="username"
+          id="username"
+          placeholder="Johny"
+          formControlName="username"
+        />
       </p>
-      <p class="error">Username is required!</p>
+      @if (registerForm.get('username')?.touched && registerForm.get('username')?.invalid) {
+        @if (registerForm.get('username')?.errors?.['required']) {
+          <p class="error">Username is required!</p>
+        }
+        @if (registerForm.get('username')?.errors?.['minlength']) {
+          <p class="error">Username must be at least 5 characters long.</p>
+        }
+      }
 
       <!-- email -->
       <p class="field field-icon">
         <label for="email"
           ><span><i class="fas fa-envelope"></i></span
         ></label>
-        <input type="email" name="email" id="email" placeholder="john.doe@gmail.com" [(ngModel)]="email"/>
+        <input
+          appInputError
+          type="email"
+          name="email"
+          id="email"
+          placeholder="john.doe@gmail.com"
+          formControlName="email"
+        />
       </p>
-      <!-- <p class="error">
-                    Email is required!
-                </p>
-                <p class="error">
-                    Email is not valid!
-                </p> -->
+      @if (registerForm.get('email')?.touched && registerForm.get('email')?.invalid) {
+        <p class="error">Email is not valid!</p>
+      }
 
       <!-- telephone -->
       <p class="field field-icon">
@@ -34,37 +52,59 @@
         <select name="select-tel" id="select-tel" class="tel">
           <option value="00359">+359</option>
         </select>
-        <input type="text" name="tel" id="tel" placeholder="885 888 888" [(ngModel)]="tel"/>
+        <input type="text" name="tel" id="tel" placeholder="885 888 888" formControlName="tel" />
       </p>
 
-      <!-- password -->
-      <p class="field field-icon">
-        <label for="password"
-          ><span><i class="fas fa-lock"></i></span
-        ></label>
-        <input type="password" name="password" id="password" placeholder="******" [(ngModel)]="password"/>
-      </p>
-      <!-- <p class="error">
-                    Password is required!
-                </p>
-                <p class="error">
-                    Password must be at least 4 characters!
-                </p> -->
+      <!-- passwords group -->
+      <ng-container formGroupName="passwords">
+        <p class="field field-icon">
+          <label for="password"
+            ><span><i class="fas fa-lock"></i></span
+          ></label>
+          <input
+            appInputError
+            type="password"
+            name="password"
+            id="password"
+            placeholder="******"
+            formControlName="password"
+            [class.input-error]="passwordsGroup.invalid && passwordsGroup.touched"
+          />
+        </p>
+        @if (passwordsGroup.get('password')?.touched && passwordsGroup.get('password')?.invalid) {
+          <p class="error">Password must be at least 5 characters!</p>
+        }
 
-      <!-- rePassword -->
-      <p class="field field-icon">
-        <label for="rePassword"
-          ><span><i class="fas fa-lock"></i></span
-        ></label>
-        <input type="password" name="rePassword" id="rePassword" placeholder="******" [(ngModel)]="rePassword"/>
-      </p>
-      <!-- <p class="error">Repeat Password does not match password!</p> -->
+        <p class="field field-icon">
+          <label for="rePassword"
+            ><span><i class="fas fa-lock"></i></span
+          ></label>
+          <input
+            appInputError
+            type="password"
+            name="rePassword"
+            id="rePassword"
+            placeholder="******"
+            formControlName="rePassword"
+            [class.input-error]="passwordsGroup.invalid && passwordsGroup.touched"
+          />
+        </p>
+        @if (passwordsGroup.touched && passwordsGroup.errors?.['passwordsMismatch']) {
+          <p class="error">Passwords do not match!</p>
+        }
+      </ng-container>
 
-      <button type="submit">Create Account</button>
+      @if (registerForm.invalid && registerForm.touched) {
+        <p class="error">You can't continue until you provide valid data</p>
+      }
+
+      <button type="submit" [disabled]="registerForm.invalid || isLoading">
+        {{ isLoading ? 'Creating Account...' : 'Create Account' }}
+      </button>
 
       <p class="text-center">
         Have an account?
-        <a href="/login">Log In</a>
+        <a routerLink="/login">Log In</a>
       </p>
     </fieldset>
   </form>
