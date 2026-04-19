@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service.js';
 import { InputError } from '../../../shared/directives/input-error.directive.js';
@@ -7,7 +7,7 @@ import { emailValidator } from '../../../shared/validators/email.validator.js';
 
 @Component({
   selector: 'app-login',
-  imports: [FormsModule, RouterLink, InputError],
+  imports: [ReactiveFormsModule, RouterLink, InputError],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -17,8 +17,8 @@ export class Login {
   private fb = inject(FormBuilder);
 
   loginForm: FormGroup = this.fb.group({
-    email: ['', Validators.required, emailValidator],
-    password: ['', Validators.required, Validators.minLength(5)],
+    email: ['', [Validators.required, emailValidator()]],
+    password: ['', [Validators.required, Validators.minLength(5)]],
   });
 
   isLoading = false;

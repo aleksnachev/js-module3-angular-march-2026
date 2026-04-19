@@ -2,7 +2,6 @@ import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service.js';
 import { UserService } from '../../../core/services/user.service.js';
-import { UserWithCredentials } from '../../../shared/interfaces/user.js';
 import { Router } from '@angular/router';
 
 @Component({
@@ -36,7 +35,7 @@ export class Register {
       return;
     }
 
-    const newUser: UserWithCredentials = {
+    const newUser = {
       _id: this.generateId(),
       username: this.username,
       email: this.email,
@@ -44,8 +43,6 @@ export class Register {
       password: this.password
     };
 
-    const sessionUser = this.userService.register(newUser)
-    this.authService.setSession(sessionUser)
     this.router.navigate(['/themes'])
   }
 
