@@ -7,11 +7,11 @@
     @for (mission of missions; track mission.id) {
       <div class="mission-card" appHighlight="#1e3a5f">
         <div class="mission-status status-{{ mission.status }}">
-          <span [appStatusStyle]="mission.status">{{ mission.status }}</span>
+          <span [appStatusStyle]="mission.status">{{ mission.status | missionStatus }}</span>
         </div>
         <h3>{{ mission.name }}</h3>
         <p class="destination">{{ mission.destination }}</p>
-        <p class="launch-date">Launch: {{ mission.launchDate }}</p>
+        <p class="launch-date">Launch: {{ mission.launchDate | timeUntil }}</p>
         <p class="crew">Crew: {{ mission.crew }} astronauts</p>
 
         <a [routerLink]="['/missions', mission.id]" class="details-btn"> View Details </a>
