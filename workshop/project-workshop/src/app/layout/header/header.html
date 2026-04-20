@@ -41,4 +41,14 @@
       </li>
     </ul>
   </nav>
+
+  @if (notification()) {
+    <p
+      class="notification"
+      [class.error-message]="notification()?.type === 'error'"
+      [class.success-message]="notification()?.type === 'success'"
+    >
+      {{ notification()?.message }}
+    </p>
+  }
 </header>

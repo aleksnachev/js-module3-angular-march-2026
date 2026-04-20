@@ -4,6 +4,7 @@ import { AuthService } from '../../../core/services/auth.service.js';
 import { Router, RouterLink } from '@angular/router';
 import { emailValidator } from '../../../shared/validators/email.validator.js';
 import { passwordsMatchValidator } from '../../../shared/validators/passwords-match.validator.js';
+import { NotificationService } from '../../../core/services/notification.service.js';
 
 @Component({
   selector: 'app-register',
@@ -13,6 +14,7 @@ import { passwordsMatchValidator } from '../../../shared/validators/passwords-ma
 })
 export class Register {
   private authService = inject(AuthService);
+  private notifService = inject(NotificationService)
   private fb = inject(FormBuilder);
   private router = inject(Router);
 
@@ -30,7 +32,6 @@ export class Register {
   });
 
   isLoading = false;
-  errorMessage = ''
 
   get passwordsGroup(): FormGroup {
     return this.registerForm.get("passwords") as FormGroup;
@@ -43,7 +44,6 @@ export class Register {
     }
 
     this.isLoading = true;
-    this.errorMessage = ''
     
 
     const { username, email, tel, passwords } = this.registerForm.value;
@@ -59,12 +59,11 @@ export class Register {
       next: (user) => {
         this.authService.setSession(user);
         this.isLoading = false;
-        // this.notifService.showSuccess('Register successful');
+        this.notifService.showSuccess('Register successful');
         this.router.navigate(["/themes"]);
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = err.error?.message || 'Registration failed. Try again! '
       },
     });
   }

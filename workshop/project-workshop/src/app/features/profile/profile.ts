@@ -4,6 +4,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { InputError } from '../../shared/directives/input-error.directive.js';
 import { EmailValidator } from '../../shared/directives/email-validator.directive.js';
 import { email } from '@angular/forms/signals';
+import { NotificationService } from '../../core/services/notification.service.js';
 
 @Component({
   selector: 'app-profile',
@@ -15,12 +16,11 @@ export class Profile implements OnInit{
   @ViewChild('profileForm') profileForm!:NgForm
 
   private authService = inject(AuthService)
-
+  private notifService = inject(NotificationService);
   user = this.authService.currentUser
 
   isEditMode = signal(false)
   isLoading = signal(false)
-  errorMessage = signal('')
 
   editUsername = ''
   editEmail = ''
@@ -42,12 +42,10 @@ export class Profile implements OnInit{
       this.editEmail = currentUser.email
       this.editTel = currentUser.tel?.replace('+359', '') || ''
     }
-    this.errorMessage.set('')
     this.isEditMode.set(true)
   }
 
   onCancel():void{
-    this.errorMessage.set('')
     this.isEditMode.set(false)
   }
 
@@ -57,7 +55,6 @@ export class Profile implements OnInit{
     }
 
     this.isLoading.set(true)
-    this.errorMessage.set('')
 
     const updateData = {
       username:this.editUsername,
@@ -70,10 +67,11 @@ export class Profile implements OnInit{
         this.authService.setSession(user)
         this.isLoading.set(false)
         this.isEditMode.set(false)
+        this.notifService.showSuccess('Profile updated')
       },
       error: (err) => {
         this.isLoading.set(false)
-        this.errorMessage.set(err.error?.message || 'Failed to update profile')
+        this.notifService.showError('Updating profile failed')
       }
     })
   }

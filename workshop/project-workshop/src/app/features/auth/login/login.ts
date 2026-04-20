@@ -10,6 +10,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service.js';
 import { InputError } from '../../../shared/directives/input-error.directive.js';
 import { emailValidator } from '../../../shared/validators/email.validator.js';
+import { NotificationService } from '../../../core/services/notification.service.js';
 
 @Component({
   selector: 'app-login',
@@ -20,6 +21,7 @@ import { emailValidator } from '../../../shared/validators/email.validator.js';
 export class Login {
   private router = inject(Router);
   private authService = inject(AuthService);
+  private notifService = inject(NotificationService)
   private fb = inject(FormBuilder);
 
   loginForm: FormGroup = this.fb.group({
@@ -28,7 +30,6 @@ export class Login {
   });
 
   isLoading = false;
-  errorMessage = '';
 
   onLogin(): void {
     if (this.loginForm.invalid) {
@@ -37,7 +38,6 @@ export class Login {
     }
 
     this.isLoading = true;
-    this.errorMessage = '';
 
     const { email, password } = this.loginForm.value;
 
@@ -45,11 +45,11 @@ export class Login {
       next: (user) => {
         this.authService.setSession(user);
         this.isLoading = false
+        this.notifService.showSuccess('Login successful')
         this.router.navigate(['/themes'])
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = err.error?.message || 'Login failed.Try again';
       },
     });
   }
