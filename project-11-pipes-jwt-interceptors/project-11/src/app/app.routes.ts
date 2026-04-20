@@ -15,9 +15,16 @@ export const routes: Routes = [
   { path: 'missions', component: Missions },
   { path: 'missions/:id', component: MissionDetails, resolve: { mission: missionResolver } },
   { path: 'countdown', component: Countdown },
+
   { path: 'crew-register', component: CrewRegister },
   { path: 'new-mission', component: MissionForm },
-  { path: 'command-center', component: CommandCenter, canActivate: [authGuard] },
+
+  {
+    path: 'command-center',
+    loadComponent: () => import('./features/command-center/command-center.js')
+    .then(m => m.CommandCenter),
+    canActivate: [authGuard],
+  },
   { path: 'login', component: Login },
   { path: '**', component: NotFound },
 ];

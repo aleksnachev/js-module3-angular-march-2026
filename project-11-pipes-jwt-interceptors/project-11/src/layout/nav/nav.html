@@ -21,11 +21,19 @@
     </li>
 
     <li>
-      <a routerLink="/command-center" routerLinkActive="active">Command center</a>
+      <a routerLink="/command-center" routerLinkActive="active">Command Center</a>
     </li>
 
     <li>
-      <a routerLink="/login" routerLinkActive="active">Login</a>
+      @if (isLoggedIn$ | async) {
+        @if (user$ | async; as user) {
+          <a routerLink="/login" routerLinkActive="active" class="user-link"
+            >👨‍🚀 {{ user.username }}</a
+          >
+        }
+      } @else {
+        <a routerLink="/login" routerLinkActive="active">Login</a>
+      }
     </li>
   </ul>
 </nav>

@@ -19,7 +19,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         case 403:
           errorMessage = 'You dont have access for this';
           break;
-        case 403:
+        case 405:
           errorMessage = 'You dont have access for this';
           break;
         case 404:

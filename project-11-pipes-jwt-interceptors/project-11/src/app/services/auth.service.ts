@@ -1,14 +1,30 @@
 import { Injectable, signal } from '@angular/core';
 import { User } from '../interfaces/user.interface.js';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private loggedIn = signal(false);
+  private loggedInSubject = new BehaviorSubject<boolean>(false);
+  private userSubject = new BehaviorSubject<User | null>(null);
+
+  isLoggedIn$ = this.loggedInSubject.asObservable();
+  user$ = this.userSubject.asObservable();
+
+  constructor() {
+    this.checkStoredAuth();
+  }
 
   isLoggedIn(): boolean {
-    return this.loggedIn();
+    return this.loggedInSubject.value;
+  }
+
+  get currentUser(): User | null {
+    return this.userSubject.value;
+  }
+  get token(): string | null {
+    return localStorage.getItem('authToken');
   }
 
   login(username: string = 'cosmonaut_12221'): void {
@@ -23,11 +39,17 @@ export class AuthService {
 
     localStorage.setItem('authToken', fakeToken);
     localStorage.setItem('user', JSON.stringify(user));
+
+    this.userSubject.next(user);
+    this.loggedInSubject.next(true);
   }
 
   logout(): void {
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');
+
+    this.userSubject.next(null);
+    this.loggedInSubject.next(false);
   }
 
   private checkStoredAuth(): void {
@@ -37,6 +59,8 @@ export class AuthService {
     if (token && userJson) {
       try {
         const user = JSON.parse(userJson) as User;
+        this.userSubject.next(user);
+        this.loggedInSubject.next(true);
       } catch {
         this.logout();
       }
